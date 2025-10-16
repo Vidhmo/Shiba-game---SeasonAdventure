@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://blfoq37340ias"]
+[gd_scene load_steps=38 format=3 uid="uid://blfoq37340ias"]
 
 [ext_resource type="Script" uid="uid://coffugoc6awgg" path="res://scenes/enemy.gd" id="1_55jtl"]
 [ext_resource type="Texture2D" uid="uid://jcxvmlme4mhg" path="res://Assets/Game Main Assets/Enemy/Dwarf Sprite Sheet 1.3v.png" id="2_mpr68"]
@@ -46,6 +46,34 @@ region = Rect2(128, 192, 64, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_h6feu"]
 atlas = ExtResource("2_mpr68")
 region = Rect2(192, 192, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55jtl"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(0, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mpr68"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(64, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ft8do"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(128, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5wwv6"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(192, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vja8"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(256, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iwav8"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(320, 224, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1i2q2"]
+atlas = ExtResource("2_mpr68")
+region = Rect2(384, 224, 64, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_npdxj"]
 atlas = ExtResource("2_mpr68")
@@ -140,8 +168,34 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h6feu")
 }],
-"loop": true,
+"loop": false,
 "name": &"Damage",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_55jtl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mpr68")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ft8do")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5wwv6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vja8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iwav8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1i2q2")
+}],
+"loop": false,
+"name": &"Dead",
 "speed": 10.0
 }, {
 "frames": [{
@@ -199,7 +253,7 @@ radius = 7.0
 height = 16.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_55jtl"]
-radius = 32.0
+radius = 29.6667
 height = 124.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tt7e2"]
@@ -212,10 +266,10 @@ speed = 50.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(2, -12)
 sprite_frames = SubResource("SpriteFrames_d7dqe")
-animation = &"Attack"
+animation = &"Dead"
 autoplay = "Idle"
-frame = 4
-frame_progress = 0.062392
+frame = 6
+frame_progress = 1.0
 
 [node name="EnemyHitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
@@ -225,6 +279,7 @@ shape = SubResource("CapsuleShape2D_5gnn4")
 position = Vector2(41, -12)
 
 [node name="ChaseHitbox" type="CollisionShape2D" parent="ChaseArea"]
+position = Vector2(-13, -7)
 scale = Vector2(3, 0.5)
 shape = SubResource("CapsuleShape2D_55jtl")
 
@@ -239,9 +294,13 @@ shape = SubResource("RectangleShape2D_tt7e2")
 
 [node name="AttackTimer" type="Timer" parent="."]
 
+[node name="DeadTimer" type="Timer" parent="."]
+
+[connection signal="frame_changed" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_frame_changed"]
 [connection signal="body_entered" from="ChaseArea" to="." method="_on_chase_area_body_entered"]
 [connection signal="body_exited" from="ChaseArea" to="." method="_on_chase_area_body_exited"]
 [connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]
 [connection signal="body_exited" from="AttackArea" to="." method="_on_attack_area_body_exited"]
 [connection signal="timeout" from="StateTimer" to="." method="_on_state_timer_timeout"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]
+[connection signal="timeout" from="DeadTimer" to="." method="_on_dead_timer_timeout"]

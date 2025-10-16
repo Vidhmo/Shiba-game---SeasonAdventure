@@ -20,6 +20,8 @@ func _physics_process(delta: float) -> void:
 	var direction = player.velocity.x
 	var on_floor = player.is_on_floor()
 	var combo_count = player.combo_count
+	var dead = player.dead
+	var is_taking_damage = player.is_taking_damage
 	
 	
 	#Flips the player
@@ -35,19 +37,25 @@ func _physics_process(delta: float) -> void:
 	
 	
 	#Animations of player
-	if is_attacking :
+	if dead: 
+		if animation != "Death":
+			play("Death")
+	elif is_taking_damage :
+		if animation != "Damage" :
+			play("Damage")
+	elif is_attacking:
 		var anim_name = "Attack_"+str(combo_count)
 		if animation != anim_name:
 			play(anim_name)
-	elif not on_floor :
-		if animation != "Jump" :
+	elif not on_floor:
+		if animation != "Jump":
 			play("Jump")
-	elif direction == 0 :
-		if animation != "Idle" :
+	elif direction == 0:
+		if animation != "Idle":
 			play("Idle")
 	elif direction != 0:
-		play("Run")
-	
+		if animation != "Run":
+			play("Run")
 		
 	
 	

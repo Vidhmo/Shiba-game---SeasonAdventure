@@ -486,6 +486,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAQAAAAEAAAABAAAAAQAAAAEAAAACAAAAAQAAAAE
 tile_set = SubResource("TileSet_lbhrr")
 
 [node name="Enemy" parent="." instance=ExtResource("3_lnu2h")]
+unique_name_in_owner = true
 position = Vector2(360, -16)
 patrol_time = 4.0
 wait_time = 5.0
