@@ -1,6 +1,6 @@
 [gd_scene load_steps=38 format=3 uid="uid://blfoq37340ias"]
 
-[ext_resource type="Script" uid="uid://coffugoc6awgg" path="res://scenes/enemy.gd" id="1_55jtl"]
+[ext_resource type="Script" uid="uid://coffugoc6awgg" path="res://scripts/enemy.gd" id="1_55jtl"]
 [ext_resource type="Texture2D" uid="uid://jcxvmlme4mhg" path="res://Assets/Game Main Assets/Enemy/Dwarf Sprite Sheet 1.3v.png" id="2_mpr68"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s7bn3"]
@@ -252,14 +252,14 @@ animations = [{
 radius = 7.0
 height = 16.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_55jtl"]
-radius = 29.6667
-height = 124.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tkefo"]
+size = Vector2(140.667, 135.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tt7e2"]
 size = Vector2(14.75, 18)
 
 [node name="Enemy" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_55jtl")
 speed = 50.0
 
@@ -276,15 +276,17 @@ position = Vector2(0, -8)
 shape = SubResource("CapsuleShape2D_5gnn4")
 
 [node name="ChaseArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(41, -12)
 
 [node name="ChaseHitbox" type="CollisionShape2D" parent="ChaseArea"]
-position = Vector2(-13, -7)
+position = Vector2(-47, -10.125)
 scale = Vector2(3, 0.5)
-shape = SubResource("CapsuleShape2D_55jtl")
+shape = SubResource("RectangleShape2D_tkefo")
 
 [node name="AttackArea" type="Area2D" parent="."]
 position = Vector2(7, -9)
+collision_layer = 8
 
 [node name="AttackHitbox" type="CollisionShape2D" parent="AttackArea"]
 position = Vector2(0.625, 0)

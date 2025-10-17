@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=4 uid="uid://bekhjeovfgmi2"]
+[gd_scene load_steps=8 format=4 uid="uid://bekhjeovfgmi2"]
 
 [ext_resource type="PackedScene" uid="uid://boetu3joeeqgd" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="Texture2D" uid="uid://ctlha5sccayxx" path="res://Assets/Game Main Assets/Tilesets/world_tileset.png" id="2_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://blfoq37340ias" path="res://scenes/Enemy.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://blfoq37340ias" path="res://scenes/dwarf.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://ew8x7ix65g85" path="res://scenes/golem.tscn" id="4_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://cf2kiqcxmynpa" path="res://scenes/cactus.tscn" id="5_iywne"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
 texture = ExtResource("2_yqjtg")
@@ -474,6 +476,7 @@ sources/1 = SubResource("TileSetAtlasSource_lnu2h")
 unique_name_in_owner = true
 z_index = 2
 position = Vector2(38, -41)
+knockback_force = 100
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(8, -6)
@@ -490,3 +493,15 @@ unique_name_in_owner = true
 position = Vector2(360, -16)
 patrol_time = 4.0
 wait_time = 5.0
+
+[node name="Enemy2" parent="." instance=ExtResource("4_lbhrr")]
+unique_name_in_owner = true
+position = Vector2(750, -18)
+chase_speed = 75.0
+speed = 55.0
+health = 90
+
+[node name="Enemy3" parent="." instance=ExtResource("5_iywne")]
+unique_name_in_owner = true
+position = Vector2(563, -15)
+speed = 60.0

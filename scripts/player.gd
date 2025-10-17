@@ -3,7 +3,6 @@ extends CharacterBody2D
 const SPEED = 130.0
 const JUMP_VELOCITY = -300.0
 
-@onready var enemy: CharacterBody2D = %Enemy
 
 @onready var attack_cooldown_timer: Timer = $AttackCooldownTimer
 @onready var combo_timer: Timer = $ComboTimer
@@ -24,15 +23,15 @@ var max_combo : int = 3
 var is_attacking = false
 
 var damage : int
-var knockback_force = 40
-var upback_force = -40
+@export var knockback_force = 50
+var upback_force = -120
+
 
 var dead : bool = false
 var is_taking_damage : bool = false
 var knockback_velocity : Vector2 = Vector2.ZERO
 
-var enemy_in_attack_range : bool = false
-
+var current_target_enemy = null
 
 var animation_script = null
 
@@ -55,8 +54,19 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	if is_taking_damage :
-		velocity = knockback_velocity
-		knockback_velocity.y += get_gravity().y * delta
+		knockback_velocity += get_gravity() * delta
+		knockback_velocity.x = lerp(knockback_velocity.x, 0.0, 5 * delta)  # Smooth slowdown
+		velocity.x = knockback_velocity.x
+		
+		if not is_on_floor():
+			velocity += get_gravity() * delta
+			
+		# Agar bahut slow ho gaya toh stop
+		if abs(knockback_velocity.x) < 5:
+			is_taking_damage = false
+			knockback_velocity = Vector2.ZERO
+			
+		
 		move_and_slide()
 		return
 
@@ -107,10 +117,16 @@ func attack() :
 	combo_timer.start(2)
 	if combo_count == 1 :
 		damage = 30
+		knockback_force = 120
+		upback_force = -120
 	elif combo_count == 2 :
 		damage = 40
+		knockback_force = 140
+		upback_force = -135
 	elif combo_count == 3:
 		damage = 50 
+		knockback_force = 115
+		upback_force = -150
 		
 	print("Damage :", damage)
 	print("Combo_count :" , combo_count)
@@ -126,7 +142,7 @@ func die() :
 		player_area.disabled = true
 		death_timer.start(2)
 		
-func take_damage(damage_amount : int , attacker_position : Vector2 , knockback_force : int , upback_force : int) :
+func take_damage(damage_amount : int , attacker_position : Vector2 , knockback_force : int) :
 	if dead or is_taking_damage :
 		return
 	
@@ -138,8 +154,8 @@ func take_damage(damage_amount : int , attacker_position : Vector2 , knockback_f
 		if knockback_direction == 0 :
 			knockback_direction = 1
 			
-		knockback_velocity.x = knockback_direction * knockback_force
-		knockback_velocity.y = upback_force
+		knockback_velocity = Vector2(knockback_direction * knockback_force, -140)
+		velocity = knockback_velocity
 
 	
 		await get_tree().create_timer(0.5).timeout
@@ -165,15 +181,15 @@ func _on_combo_timer_timeout() -> void:
 
 func _on_attack_timer_timeout() -> void:
 	attack_hitbox.disabled = true
-	if enemy_in_attack_range :
-		enemy.take_damage(damage , global_position , knockback_force )
-	
+
+	if current_target_enemy != null and is_instance_valid(current_target_enemy):
+		if current_target_enemy.has_method("take_damage"):
+			current_target_enemy.take_damage(damage, global_position, knockback_force, upback_force)
 
 func _on_attack_area_body_entered(body: Node2D) -> void:
-	if body.name == "Enemy" :
-		enemy_in_attack_range = true
-
+	if body.is_in_group("enemies"):
+		current_target_enemy = body
 
 func _on_attack_area_body_exited(body: Node2D) -> void:
-	if body.name == "Enemy" :
-		enemy_in_attack_range = false
+	if body == current_target_enemy and body.is_in_group("enemies"):
+		current_target_enemy = null
